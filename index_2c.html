@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Collision Event Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        button { padding: 10px; margin: 10px; background: blue; color: white; border: none; cursor: pointer; }
+        svg { border: 1px solid black; }
+    </style>
+</head>
+<body>
+    <h1>Particle Collision Event Visualization</h1>
+    <svg width="500" height="400"></svg>
+    <br>
+    <button onclick="fetchData()">Load Event Data</button>
+    <button onclick="nextEvent()">Next Event</button>
+
+    <script>
+        let eventData = [];
+        let currentEventIndex = 0;
+
+        function fetchData() {
+            fetch("http://127.0.0.1:5000/event")
+                .then(response => response.json())
+                .then(data => {
+                    if (!Array.isArray(data) || data.length === 0) {
+                        console.error("No valid events received");
+                        alert("No valid events found!");
+                        return;
+                    }
+                    console.log("Received Data:", data);
+                    eventData = data;
+                    currentEventIndex = 0;
+                    visualizeData(eventData[currentEventIndex]);  // Load first event
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    alert("Failed to fetch event data!");
+                });
+        }
+
+        function nextEvent() {
+            if (eventData.length === 0) {
+                alert("No event data loaded! Click 'Load Event Data' first.");
+                return;
+            }
+            currentEventIndex = (currentEventIndex + 1) % eventData.length;
+            visualizeData(eventData[currentEventIndex]);
+        }
+
+        function visualizeData(particles) {
+            const svg = d3.select("svg");
+            svg.selectAll("*").remove();  // Clear previous particles
+
+            const centerX = 250, centerY = 200;
+            const maxPx = d3.max(particles, d => Math.abs(d.px)) || 1;
+            const maxPy = d3.max(particles, d => Math.abs(d.py)) || 1;
+            const scale = 150 / Math.max(maxPx, maxPy);
+            const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+            const maxEnergy = d3.max(particles, d => d.E) || 1;
+            const radiusScale = d3.scaleLinear().domain([0, maxEnergy]).range([5, 15]);
+
+            // Draw axes
+            svg.append("line").attr("x1", 0).attr("y1", centerY).attr("x2", 500).attr("y2", centerY)
+                .attr("stroke", "gray").attr("stroke-dasharray", "4");
+            svg.append("line").attr("x1", centerX).attr("y1", 0).attr("x2", centerX).attr("y2", 400)
+                .attr("stroke", "gray").attr("stroke-dasharray", "4");
+
+            // Map particles with adjusted positions
+            const nodes = particles.map(d => ({
+                id: d.id,
+                x: centerX + d.px * scale,
+                y: centerY - d.py * scale,
+                radius: radiusScale(d.E),
+                px: d.px,
+                py: d.py
+            }));
+
+            // Force simulation to prevent overlaps
+            const simulation = d3.forceSimulation(nodes)
+                .force("collide", d3.forceCollide().radius(d => d.radius + 10).strength(1))
+                .force("x", d3.forceX(d => d.x).strength(0.1))
+                .force("y", d3.forceY(d => d.y).strength(0.1))
+                .stop();
+
+            for (let i = 0; i < 120; i++) simulation.tick(); // Run simulation
+
+            // Draw particles
+            svg.selectAll("circle")
+                .data(nodes)
+                .enter()
+                .append("circle")
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y)
+                .attr("r", d => d.radius)
+                .attr("fill", (d, i) => colorScale(i))
+                .attr("stroke", "black");
+
+            // Add labels (avoiding overlap)
+            svg.selectAll("text")
+                .data(nodes)
+                .enter()
+                .append("text")
+                .attr("x", d => d.x + 12)
+                .attr("y", d => d.y - 5)
+                .text(d => `p(${d.px.toFixed(1)}, ${d.py.toFixed(1)})`)
+                .attr("font-size", "12px")
+                .attr("fill", "black")
+                .attr("text-anchor", "start");
+        }
+    </script>
+</body>
+</html>
