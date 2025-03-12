@@ -95,6 +95,14 @@ This repository contains my submission for the MCnet/MCviz evaluation exercise. 
 ## Setup & Installation
 - Task2a and Task2b solution can be found in task2a_2b.ipynb file in repo
 
+
+Bonus task recording below :-
+
+
+
+https://github.com/user-attachments/assets/671df86c-bf8e-4622-ae6d-7c044fa222e2
+
+
 - To run the Task2c, you will need Python and the following libraries:
 ```sh
 pip install flask flask-cors
@@ -106,6 +114,14 @@ pip install flask flask-cors
 python server.py
 ```
 Then open `http://127.0.0.1:5000/event` in your browser.
+
+Demo output is shown in below recording :)
+
+
+
+https://github.com/user-attachments/assets/4ade7895-84a7-4d1d-bf38-db8fd96364c7
+
+
 
 Frontend code is wrriten in index_2c.html and can be accessed through it :)
 
