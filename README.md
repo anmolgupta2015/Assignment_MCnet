@@ -1,4 +1,4 @@
-# MCnet/MCviz GSoC 2025 Evaluation Assignment
+# MCnet/MCviz Evaluation Assignment
 
 ## Project Overview
 This repository contains my submission for the MCnet/MCviz evaluation exercise. The assignment includes conceptual questions and practical tasks related to Monte Carlo event visualization in particle physics.
