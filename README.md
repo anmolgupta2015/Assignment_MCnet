@@ -12,13 +12,14 @@ This repository contains my submission for the MCnet/MCviz evaluation exercise. 
 #### **HepMC (HEP Monte Carlo) Format**
 - Used to store Monte Carlo (MC) event data in **high-energy physics (HEP)** simulations.
 - Represents **generated events** with particles, vertices, and kinematic properties.
-- **Structure:** Graph-based format (particles as nodes, interactions as edges).
+- **Structure:** Graph-based format (particles as nodes, interactions as edges), making it ideal for tracking decay chains and event topology.
 - **Usage:** Typically used in **later stages** of event generation, especially for detector simulations.
 
 #### **LHE (Les Houches Event) Format**
 - Used to store **parton-level events** from MC generators like Pythia, MadGraph, and Herwig.
 - **Structure:** XML-based format, where each event contains a list of particles with their kinematic properties.
 - **Usage:** Primarily used for **parton-level event generation**, before showering and hadronization.
+- The **hierarchical structure** makes it easy to preprocess data before detailed simulation.
 
 **Key Differences:**  
 | Feature        | HepMC | LHE |
@@ -37,8 +38,8 @@ This repository contains my submission for the MCnet/MCviz evaluation exercise. 
 - Assists in **educational and outreach** efforts by making data accessible.
 
 #### **Use Cases:**
-1. **Particle Collision Analysis** – Visualizing jet formation, decay chains, and missing energy for physics studies.
-2. **Detector Simulation Validation** – Comparing MC-generated events with experimental data to refine detector response models.
+1. **Particle Collision Analysis** – Visualizing jet formation, decay chains, and missing energy for physics studies. Seeing events in an intuitive format makes it easier to spot anomalies or unexpected physics signals.
+2. **Detector Simulation Validation** – Comparing MC-generated events with experimental data to refine detector response models. Visualization makes discrepancies stand out, which is crucial for improving simulation accuracy.
 
 ---
 
@@ -50,8 +51,8 @@ This repository contains my submission for the MCnet/MCviz evaluation exercise. 
 - Important for identifying **quark/gluon origins**, reconstructing **heavy particles (e.g., top quarks, Higgs boson)**.
 
 #### **Common Jet Clustering Algorithm:**
-- **kT Algorithm** – A sequential clustering method where particles are merged based on their relative transverse momentum.
-- Other examples: **Cambridge/Aachen**, **Anti-kT (widely used in LHC analyses)**.
+- **Anti-kT Algorithm** – Unlike kT, this algorithm produces more stable jet shapes, making it preferred in LHC experiments.
+- Other examples: **Cambridge/Aachen**, **kT Algorithm**.
 
 ---
 
@@ -74,7 +75,7 @@ This repository contains my submission for the MCnet/MCviz evaluation exercise. 
 ```
 - The **front-end JavaScript** can fetch this JSON and visualize the event as a node-edge diagram or scatter plot.
 
----
+
 
 ## Task 2: Practical Tasks
 
@@ -120,6 +121,19 @@ Demo output is shown in below recording :)
 
 
 https://github.com/user-attachments/assets/4ade7895-84a7-4d1d-bf38-db8fd96364c7
+
+Here’s a table summarizing the reasoning behind each choice in my visualization:
+
+| **Aspect**               | **Representation in Visualization** | **Reasoning** |
+|--------------------------|------------------------------------|--------------|
+| **Blob (Particle) Size** | Proportional to particle **energy (E)** | Higher-energy particles should have a more **prominent visual impact** since they contribute more to the event. |
+| **Blob (Particle) Color** | Assigned using **categorical color scale (d3.schemeCategory10)** | Differentiates between particles, making it easier to **identify** different types visually. |
+| **Blob (Particle) Position** | (x, y) coordinates mapped from **momentum components (px, py)** | Reflects the **direction** in which the particle is moving, allowing users to analyze kinematics. |
+| **Axes (Dashed Lines)** | Centered at **(0,0)** | Represents the **collision point** (interaction origin), helping users understand relative motion. |
+| **Text Labels** | Displayed as **p(px, py)** | Provides precise **momentum values**, making it easier to **interpret particle properties**. |
+| **Force Simulation** | Applied using **D3.js force model** | Helps prevent **overlapping particles**, making visualization clearer. |
+
+
 
 
 
