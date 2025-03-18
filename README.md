@@ -131,7 +131,6 @@ Here’s a table summarizing the reasoning behind each choice in my visualizatio
 | **Blob (Particle) Position** | (x, y) coordinates mapped from **momentum components (px, py)** | Reflects the **direction** in which the particle is moving, allowing users to analyze kinematics. |
 | **Axes (Dashed Lines)** | Centered at **(0,0)** | Represents the **collision point** (interaction origin), helping users understand relative motion. |
 | **Text Labels** | Displayed as **p(px, py)** | Provides precise **momentum values**, making it easier to **interpret particle properties**. |
-| **Force Simulation** | Applied using **D3.js force model** | Helps prevent **overlapping particles**, making visualization clearer. |
 
 
 
